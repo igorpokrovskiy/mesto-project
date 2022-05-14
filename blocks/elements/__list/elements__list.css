@@ -5,6 +5,8 @@
   row-gap: 20px;
   column-gap: 17px;
   padding: 0;
+  margin: 0 auto;
+  list-style-type: none;
 }
 
 @media (min-width: 320px) and (max-width: 1279px) {
