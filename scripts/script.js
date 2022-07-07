@@ -5,7 +5,6 @@ const popupImage = document.querySelector('.popup__image');
 const closeButton = document.querySelectorAll('.popup__close');
 const openImagePopup = document.querySelector('#popup-open-image');
 const cardTemplate = document.querySelector("#card-template").content;
-const cardElement = cardTemplate.querySelector(".element");
 const cardsContainer = document.querySelector(".elements");
 const profileName = document.querySelector('.profile__name');
 const profileAbout = document.querySelector('.profile__about');
@@ -29,7 +28,9 @@ function openPopup (elem) {
 function closePopup (elem) {
   elem.classList.remove("popup_opened");
 };
-
+  closeImagePopup.addEventListener('click', () => {
+  closePopup(openImagePopup);
+  });
 //Редактирование имени и информации о себе
 profileEditButton.addEventListener('click', () => { 
 openPopup(popupEditProfile); 
@@ -56,15 +57,19 @@ const cardInfo = initialCards.map(function (item) {
 }); 
 
 function create() {
-  cardInfo.forEach(createCard);
+  for (let i = 0; i <= cardInfo.length-1; i = i + 1) {
+  renderedCards = createCard({name: cardInfo[i].name, link: cardInfo[i].link});
+  cardsContainer.prepend(renderedCards);
+} 
 } 
   //Функция создания карточки
   function createCard({name, link}) {
   const cardElement = cardTemplate.querySelector(".element") 
     .cloneNode(true); 
   cardElement.querySelector('.element__title').textContent = name;
-  cardElement.querySelector('.element__image').src = link;
-  cardElement.querySelector('.element__image').alt = 'Фото места ${name}';   
+  const cardImage = cardElement.querySelector('.element__image');
+  cardImage.src = link;
+  cardImage.alt = `Фото места ${name}`;   
   cardElement.querySelector('.element__like-button').addEventListener('click', function (evt) { 
   evt.target.classList.toggle('element__like-button_active');
   });
@@ -73,14 +78,11 @@ function create() {
   cardItem.remove(); 
   });  
   cardElement.querySelector('.element__image').addEventListener('click', () => {
-  openPopup(openImagePopup);
   popupImage.src = link;
+  popupImage.alt = `Фото места ${name}`;  
   popupCaption.textContent = name; 
+  openPopup(openImagePopup);
   });
-  closeImagePopup.addEventListener('click', () => {
-  closePopup(openImagePopup);
-  });
-  cardsContainer.prepend(cardElement);
   return cardElement;
 }
 create();
@@ -97,7 +99,10 @@ closePopup(popupAddPhoto);
 //Добавление карточки
 function addPhotoSubmitHandler (evt) {
   evt.preventDefault(); 
-  createCard({name: inputNameCard.value, link: inputUrlCard.value});
+  cardsContainer.prepend(createCard({name: inputNameCard.value, link: inputUrlCard.value}));
+  inputNameCard.value = ""; 
+  inputUrlCard.value = ""; 
   closePopup(popupAddPhoto);
+
 }
 popupAddPhoto.addEventListener('submit', addPhotoSubmitHandler);
