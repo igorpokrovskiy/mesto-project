@@ -3,21 +3,50 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('#popup-edit-profile');
 const popupEditProfileClose = document.querySelector('.popup__close');
 const popupCaption = document.querySelector('.popup__caption');
+const popup = document.querySelector('.popup');
+
+//Функции открытия и закрытия попапа
+function openPopup(popup) {
+  popup.classList.add("popup_opened");
+  document.addEventListener('keydown', closePopupEscape, overlayClickClose(popup));
+}
+
+function closePopup(popup) {
+  popup.classList.remove("popup_opened");
+  document.removeEventListener('keydown', closePopupEscape);
+}
+
+//Закрытие попапа нажатием на Esc
+function closePopupEscape(evt) {
+  if (evt.key === 'Escape') {
+    const popup = document.querySelector('.popup_opened');
+    closePopup(popup);
+  };
+};
+
+//Закрытие попапа кликом на оверлей
+function overlayClickClose(popup) {
+  popup.addEventListener('mousedown', (evt) => {
+    if (evt.target.classList.contains('popup_opened')) {
+      closePopup(popup);
+    }
+  });
+};
 
 profileEditButton.addEventListener('click', () => {
-popupEditProfile.classList.add("popup_opened");
+  openPopup(popupEditProfile);
 });
 
 popupEditProfileClose.addEventListener('click', () => {
-popupEditProfile.classList.remove("popup_opened");
+  closePopup(popupEditProfile);
 });
 
 let profileName = document.querySelector('.profile__name');
 let profileAbout = document.querySelector('.profile__about');
 
 //Редактирование имени и информации о себе
-const formElement = document.querySelector('#popup-edit-profile');
-const nameInput = document.querySelector('#name');
+const formEdit = document.querySelector('#popup-edit-profile');
+const nameInput = document.querySelector('#username');
 const jobInput = document.querySelector('#description');
 nameInput.value = profileName.textContent;
 jobInput.value = profileAbout.textContent;
@@ -26,8 +55,9 @@ function formSubmitHandler (evt) {
     evt.preventDefault(); 
 profileName.textContent = nameInput.value;
 profileAbout.textContent = jobInput.value;
+closePopup(popupEditProfile);
 }
-formElement.addEventListener('submit', formSubmitHandler); 
+formEdit.addEventListener('submit', formSubmitHandler); 
 
 //Шесть карточек «из коробки»
 const initialCards = [
@@ -65,10 +95,11 @@ const cardInfo = initialCards.map(function (item) {
     link: item.link
   };
 });
-
+// Генерация карточек
 function create() {
   cardInfo.forEach(createCard);
 }
+
 function createCard({ name, link }) {
   const cardElement = cardTemplate.querySelector(".element")
     .cloneNode(true);
@@ -83,13 +114,13 @@ function createCard({ name, link }) {
 }); 
   cardElement.querySelector('.element__image').addEventListener('click', function () {
   const openImagePopup = document.querySelector('#popup-open-image');
-  openImagePopup.classList.add("popup_opened");
+  openPopup(openImagePopup);
   const popupImage = document.querySelector('.popup__image');
   popupImage.src = link;
   popupCaption.textContent = name; 
   const closeImagePopup = openImagePopup.querySelector('.popup__close');
-  closeImagePopup.addEventListener('click', function() {
-  openImagePopup.classList.remove("popup_opened");
+  closeImagePopup.addEventListener('click', () => {
+    closePopup(openImagePopup);
   });
  });
   cardsContainer.prepend(cardElement);
@@ -103,11 +134,11 @@ const popupAddPhoto = document.querySelector('#popup-add-photo');
 const popupAddPhotoClose = popupAddPhoto.querySelector('.popup__close');
 
 addPhotoButton.addEventListener('click', () => {
-popupAddPhoto.classList.add("popup_opened");
+  openPopup(popupAddPhoto);
 });
 
 popupAddPhotoClose.addEventListener('click', () => {
-popupAddPhoto.classList.remove("popup_opened");
+  closePopup(popupAddPhoto);
 });
 
 //Добавление карточки
@@ -134,14 +165,75 @@ function addPhotoSubmitHandler (evt) {
   }); 
   newCard.querySelector('.element__image').addEventListener('click', function () {
   const openImagePopup = document.querySelector('#popup-open-image');
-  openImagePopup.classList.add("popup_opened");
+  openPopup(openImagePopup);
   const popupImage = document.querySelector('.popup__image');
   popupImage.src = cardUrl;
   popupCaption.textContent = cardTitle; 
   const closeImagePopup = openImagePopup.querySelector('.popup__close');
-  closeImagePopup.addEventListener('click', function() {
-  openImagePopup.classList.remove("popup_opened");
+  closeImagePopup.addEventListener('click', () => {
+    closePopup(openImagePopup);
   });
  });
-}
+};
 popupAddPhoto.addEventListener('submit', addPhotoSubmitHandler); 
+
+//Валидация
+const showInputError = (formElement, inputElement, errorMessage) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add('form__input_type_error');
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add('form__input-error');
+};
+
+const hideInputError = (formElement, inputElement) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.remove('form__input_type_error');
+  errorElement.classList.remove('form__input-error');
+  errorElement.textContent = '';
+};
+
+const checkInputValidity = (formElement, inputElement) => {
+  if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+};
+
+const hasInvalidInput = (inputList) => {
+  return inputList.some(input => !input.validity.valid)
+};
+
+const toggleButtonState = (inputList, buttonElement) => {
+  if (hasInvalidInput(inputList)) {
+  buttonElement.classList.add('form__submit_disabled'); 
+  buttonElement.disabled = true;
+} else {
+  buttonElement.classList.remove('form__submit_disabled'); 
+  buttonElement.disabled = false;
+};
+};
+
+const setEventListeners = (formElement) => {
+  const inputList = Array.from(formElement.querySelectorAll('.form__input'));
+  const buttonElement = formElement.querySelector('.form__submit');
+  toggleButtonState(inputList, buttonElement);
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener('input', function () {
+      checkInputValidity(formElement, inputElement);
+      toggleButtonState(inputList, buttonElement);
+    });
+  });
+};
+
+const enableValidation = () => {
+  const formList = Array.from(document.querySelectorAll('.popup__form'));
+  formList.forEach((formElement) => {
+    formElement.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+    });
+  });
+};
+enableValidation();
+setEventListeners(formEdit);
+setEventListeners(popupAddPhoto);

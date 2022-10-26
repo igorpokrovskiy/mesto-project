@@ -30,12 +30,18 @@
     <div class="popup__container">
       <button class="popup__close" aria-label="Close popup"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" action="#" method="GET" name="edit-form">
+      <form class="popup__form" action="#" method="GET" name="edit-form" novalidate>
           <fieldset class="form__set">
-            <input class="form__input" type="text" name="username" id="name" placeholder="Имя" required>
-            <input class="form__input" type="text" name="description" id="description" placeholder="Описание" required>
-            <button type="submit" class="form__submit" aria-label="Submit">Сохранить</button>
+            <label class="form__field">
+            <input type="text" class="form__input" name="username" id="username" placeholder="Имя" minlength="2" maxlength="40" required>
+            <span class="form__input-error username-error"></span>
+          </label>
+          <label class="form__field">
+            <input type="text" class="form__input" name="description" id="description" placeholder="Описание" minlength="2" maxlength="200" required>
+            <span class="form__input-error description-error"></span>
+          </label>
           </fieldset>
+            <button class="form__submit" type="submit" aria-label="Submit">Сохранить</button>
         </form>
     </div>
   </div>
@@ -43,12 +49,18 @@
     <div class="popup__container">
       <button class="popup__close" aria-label="Close popup"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" action="#" method="post" name="add-photo-form">
+      <form class="popup__form" action="#" method="post" name="add-photo-form" novalidate>
         <fieldset class="form__set">
-              <input class="form__input" type="text" name="title" id="title" placeholder="Название" required>
-              <input class="form__input" type="url" name="link" id="link" placeholder="Ссылка на картинку" required>
+          <label class="form__field"></label>
+              <input type="text" class="form__input" name="title" id="title" placeholder="Название" minlength="2" maxlength="30" required>
+              <span class="form__input-error title-error"></span>
+            </label>
+            <label class="form__field"></label>
+              <input type="url" class="form__input" name="link" id="link" placeholder="Ссылка на картинку" required>
+              <span class="form__input-error link-error"></span>
+            </label>
+            </fieldset>
               <button class="form__submit" type="submit" id="add-photo-submit">Сохранить</button>
-          </fieldset>
         </form>
         </div>
       </div>
