@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="pages/index.css">
   <title>Место</title>
 </head>
 <body class="page">
   <header class="header">
-  <a href="#"><img alt="Логотип" class="header__logo" src="./images/logo.svg"></a>
+  <a href="#"><img alt="Логотип" class="header__logo" src="<%=require('./images/logo.svg')%>"></a>
 </header>
   <main class="content">
     <section class="profile">
-      <img class="profile__avatar" alt="Аватар профиля" src="./images/profile-image.jpg">
+      <img class="profile__avatar" alt="Аватар профиля" src="<%=require('./images/profile-image.jpg')%>">
       <div class="profile__info">
         <h1 class="profile__name">Жак-Ив Кусто</h1>
         <button class="profile__edit-button page__button" aria-label="Edit profile" title="Редактировать профиль" type="button"></button>
@@ -33,11 +32,13 @@
       <form class="popup__form" action="#" method="GET" name="edit-form" novalidate>
           <fieldset class="form__set">
             <label class="form__field">
-            <input type="text" class="form__input" name="username" id="username" placeholder="Имя" minlength="2" maxlength="40" required>
+            <input type="text" class="form__input" name="username" id="username" placeholder="Имя" minlength="2" maxlength="40" pattern="^[а-яА-Яa-zA-Z\s-]+$"
+            data-error-message="Разрешены только латинские и кириллические буквы, дефисы и пробелы" required>
             <span class="form__input-error username-error"></span>
           </label>
           <label class="form__field">
-            <input type="text" class="form__input" name="description" id="description" placeholder="Описание" minlength="2" maxlength="200" required>
+            <input type="text" class="form__input" name="description" id="description" placeholder="Описание" minlength="2" maxlength="200" pattern="^[а-яА-Яa-zA-Z\s-]+$"
+            data-error-message="Разрешены только латинские и кириллические буквы, дефисы и пробелы" required>
             <span class="form__input-error description-error"></span>
           </label>
           </fieldset>
@@ -52,7 +53,8 @@
       <form class="popup__form" action="#" method="post" name="add-photo-form" novalidate>
         <fieldset class="form__set">
           <label class="form__field"></label>
-              <input type="text" class="form__input" name="title" id="title" placeholder="Название" minlength="2" maxlength="30" required>
+              <input type="text" class="form__input" name="title" id="title" placeholder="Название" minlength="2" maxlength="30" pattern="^[а-яА-Яa-zA-Z\s-]+$"
+              data-error-message="Разрешены только латинские и кириллические буквы, дефисы и пробелы" required>
               <span class="form__input-error title-error"></span>
             </label>
             <label class="form__field"></label>
@@ -82,7 +84,5 @@
       </div>
     </li>
       </template>
-
-<script src="scripts/script.js"></script>
 </body>
 </html>
