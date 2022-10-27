@@ -1,26 +1,21 @@
 import './pages/index.css';
-import { create, addPhotoSubmitHandler } from "./components/card.js";
-import { addPhotoButton, popupAddPhoto, popupAddPhotoClose } from './components/utils.js';
-import {profileEditButton,popupEditProfile, popupEditProfileClose, 
-    openPopup, closePopup,formEdit ,closePopupEscape, overlayClickClose, formSubmitHandler} from "./components/modal.js"
-import { enableValidation,setEventListeners } from './components/validate.js';
+import { renderInitialCards, handleAddPhotoSubmit } from "./components/card.js";
+import { openPopup } from './components/utils.js';
+import {profileEditButton,popupEditProfile, profileForm, handleProfileFormSubmit, profileName, profileAbout, nameInput, jobInput} from "./components/modal.js"
+import { enableValidation } from './components/validate.js';
+import { addPhotoButton, popupAddPhoto } from './components/constants.js'
 
 profileEditButton.addEventListener('click', () => {
     openPopup(popupEditProfile);
   });
-popupEditProfileClose.addEventListener('click', () => {
-    closePopup(popupEditProfile);
-  });
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileAbout.textContent;
 
 addPhotoButton.addEventListener('click', () => {
     openPopup(popupAddPhoto);
   });
-popupAddPhotoClose.addEventListener('click', () => {
-    closePopup(popupAddPhoto);
-  });
-popupAddPhoto.addEventListener('submit', addPhotoSubmitHandler); 
-formEdit.addEventListener('submit', formSubmitHandler); 
+popupAddPhoto.addEventListener('submit', handleAddPhotoSubmit); 
+profileForm.addEventListener('submit', handleProfileFormSubmit); 
 
-setEventListeners(formEdit);
-setEventListeners(popupAddPhoto);
+renderInitialCards();
 enableValidation();
