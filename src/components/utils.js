@@ -1,5 +1,5 @@
 import { closePopupEscape } from "./modal";
-const popups = document.querySelectorAll('.popup')
+import { popups } from "./constants.js"
 //Функции открытия и закрытия попапа
       popups.forEach((popup) => {
           popup.addEventListener('mousedown', (evt) => {
