@@ -1,3 +1,4 @@
+import { popupAddPhoto } from "./constants";
 import { openPopup, closePopup } from "./utils";
 const openImagePopup = document.querySelector('#popup-open-image');
 const popupImage = document.querySelector('.popup__image');
@@ -61,7 +62,7 @@ function getCard(item) {
   popupCaption.textContent = item.name; 
   closeImagePopup.addEventListener('click', () => {
   closePopup(openImagePopup);
-  closeImagePopup.removeEventListener('click');
+  closeImagePopup.removeEventListener('click', closePopup);
   });
  });
 return cardElement
@@ -80,6 +81,7 @@ export function handleAddPhotoSubmit (evt) {
    item.link  =inputUrlCard.value;
    getCard(item);
    createCard(item);
-   evt.target.reset()
+   evt.target.reset();
+   closePopup(popupAddPhoto);
 };
 
