@@ -60,10 +60,6 @@ function getCard(item) {
   popupImage.src = item.link;
   popupImage.alt = item.name;
   popupCaption.textContent = item.name; 
-  closeImagePopup.addEventListener('click', () => {
-  closePopup(openImagePopup);
-  closeImagePopup.removeEventListener('click', closePopup);
-  });
  });
 return cardElement
 }
@@ -79,7 +75,6 @@ export function handleAddPhotoSubmit (evt) {
     const item = {}
    item.name = inputNameCard.value;
    item.link  =inputUrlCard.value;
-   getCard(item);
    createCard(item);
    evt.target.reset();
    closePopup(popupAddPhoto);

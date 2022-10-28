@@ -55,6 +55,11 @@ export const settings = {
     const buttonElement = formElement.querySelector(settings.submitButtonSelector);
     toggleButtonState(inputList, buttonElement, settings);
     inputList.forEach((inputElement) => {
+      formElement.addEventListener('reset', () => {
+        setTimeout(() => {
+         toggleButtonState(inputList, buttonElement, settings);
+        }, 0);
+      });
       inputElement.addEventListener('input', function () {
         checkInputValidity(formElement, inputElement, settings);
         toggleButtonState(inputList, buttonElement, settings);
@@ -67,5 +72,4 @@ export const settings = {
     formList.forEach((formElement) => {
       setEventListeners(formElement, settings);
     });
-    console.log(settings.formSelector)
   };
