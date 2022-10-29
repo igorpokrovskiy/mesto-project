@@ -1,6 +1,6 @@
 import './pages/index.css';
 import { renderInitialCards, handleAddPhotoSubmit } from "./components/card.js";
-import { openPopup } from './components/utils.js';
+import { openPopup, closePopup } from './components/utils.js';
 import {profileEditButton,popupEditProfile, profileForm, handleProfileFormSubmit, profileName, profileAbout, nameInput, jobInput} from "./components/modal.js"
 import { enableValidation, settings } from './components/validate.js';
 import { addPhotoButton, popupAddPhoto, popups } from './components/constants.js'
