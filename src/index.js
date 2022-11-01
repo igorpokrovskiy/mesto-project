@@ -1,9 +1,24 @@
 import './pages/index.css';
 import { renderInitialCards, handleAddPhotoSubmit } from "./components/card.js";
 import { openPopup, closePopup } from './components/utils.js';
-import {profileEditButton,popupEditProfile, profileForm, handleProfileFormSubmit, profileName, profileAbout, nameInput, jobInput} from "./components/modal.js"
+import { profileEditButton,popupEditProfile, getProfileFromServer, profileForm, handleProfileFormSubmit, profileName, profileAbout, profileAvatar, nameInput, jobInput, handleAvatarSubmit} from "./components/modal.js"
 import { enableValidation, settings } from './components/validate.js';
-import { addPhotoButton, popupAddPhoto, popups } from './components/constants.js'
+import { addPhotoButton, popupAddPhoto, popups, cardsContainer, avatarEditButton, popupEditAvatar } from './components/constants.js'
+import { fetchUser, getInitialCards } from "./components/api.js";
+
+//Загрузка информации о пользователе
+fetchUser()
+.then((data) => {
+  getProfileFromServer(profileName, profileAbout, profileAvatar, data)
+  const myId = data['_id'];
+  getInitialCards()
+    .then((json) => {
+      renderInitialCards(cardsContainer, json, myId)
+    })
+  .catch((err) => {
+    console.log(`Что-то пошло не так. Ошибка: ${err}`);
+  })
+})
 
 profileEditButton.addEventListener('click', () => {
     openPopup(popupEditProfile);
@@ -27,7 +42,12 @@ popups.forEach((popup) => {
         closePopup(popup)
       }
   })
-})
+});
 
-renderInitialCards();
+//Редактирование аватара
+avatarEditButton.addEventListener('click', () => {
+  openPopup(popupEditAvatar);
+});
+popupEditAvatar.addEventListener('submit', handleAvatarSubmit);
+
 enableValidation(settings);
