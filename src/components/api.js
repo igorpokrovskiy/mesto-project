@@ -4,34 +4,25 @@ const headers = {
     'Content-Type': 'application/json'
 };
 
+function getResponseData(res) {
+  if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
+};
+
 export function getInitialCards() {
-    return fetch(`${url}//cards`, {
+    return fetch(`${url}/cards`, {
         headers
     })
-    .then((res) => {
-      if(res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => {
-      console.log(`Что-то пошло не так. Ошибка: ${err}`);
-    })
+    .then(getResponseData)
   };
 
 export function fetchUser() {
     return fetch(`${url}/users/me`, {
         headers
     })
-    .then((res) => {
-      if(res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => {
-      console.log(`Что-то пошло не так. Ошибка: ${err}`);
-    })
+    .then(getResponseData)
   };
 
   export function patchProfile(name, about) {
@@ -43,15 +34,7 @@ export function fetchUser() {
         about: about,
       }),
     })
-    .then((res) => {
-      if(res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    })
-    .catch((err) => {
-      console.log(`Что-то пошло не так. Ошибка: ${err}`);
-    })
+    .then(getResponseData)
   };
 
 export function deleteCard(cardId){
@@ -59,10 +42,8 @@ export function deleteCard(cardId){
         method: 'DELETE',
         headers,
           })
-          .then((res) => {
-            return Promise.reject(res.status)
-          })
-};
+          .then(getResponseData)
+  };
 
 export function postCard(name, link) {
     return fetch(`${url}/cards/`, {
@@ -73,12 +54,7 @@ export function postCard(name, link) {
         link: link,
       }),
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status)
-    })
+    .then(getResponseData)
   };
 
   export function putLike(cardId) {
@@ -86,12 +62,7 @@ export function postCard(name, link) {
         method: "PUT",
         headers
       })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res.status)
-      })
+      .then(getResponseData)
   };
 
   export function deleteLike(cardId){
@@ -99,12 +70,7 @@ export function postCard(name, link) {
       method: 'DELETE',
       headers,
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res.status)
-      })
+    .then(getResponseData)
   };
 
   export function patchAvatar(avatarLink){
@@ -115,10 +81,5 @@ export function postCard(name, link) {
         avatar: `${avatarLink}`
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res.status)
-      })
-  }
+    .then(getResponseData)
+  };
