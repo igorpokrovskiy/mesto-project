@@ -4,9 +4,9 @@ export const settings = {
   inputSelector: '.popup__input',
   inputForm: '.form__input',
   submitButtonSelector: '.form__submit',
-  disabledButtonClass: 'form__submit_disabled',
-  inputErrorClass: 'form__input_type_error',
-  elementErrorClass: 'form__input-error'
+  disabledButtonClass: '.form__submit_disabled',
+  inputErrorClass: '.form__input_type_error',
+  elementErrorClass: '.form__input-error'
 };
 
   function showInputError(formElement, inputElement, errorMessage, settings){
@@ -54,11 +54,6 @@ export const settings = {
     const inputList = Array.from(formElement.querySelectorAll(settings.inputForm));
     const buttonElement = formElement.querySelector(settings.submitButtonSelector);
     toggleButtonState(inputList, buttonElement, settings);
-    formElement.addEventListener('reset', () => {
-      setTimeout(() => {
-       toggleButtonState(inputList, buttonElement, settings);
-      }, 0);
-    });
     inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', function () {
         checkInputValidity(formElement, inputElement, settings);

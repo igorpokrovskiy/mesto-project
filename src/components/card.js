@@ -1,12 +1,9 @@
-import { popupAddPhoto } from "./constants";
-import { openPopup, closePopup, loadingMessage } from "./utils";
-import { postCard, deleteCard, putLike, deleteLike } from "./api";
+import { openPopup } from "./modal";
+import { deleteCard, putLike, deleteLike } from "./api";
 const openImagePopup = document.querySelector('#popup-open-image');
 const popupImage = document.querySelector('.popup__image');
 const cardTemplate = document.querySelector("#card-template").content;
 const popupCaption = document.querySelector('.popup__caption');
-const inputNameCard = document.querySelector('#title');
-const inputUrlCard = document.querySelector('#link');
 
 //Получение карточек с сервера
 export function renderInitialCards(container, json, myId) {
@@ -63,8 +60,10 @@ export function addCard (descriptionValue, imageLinkValue, userId, myId, likes, 
 if (myId == userId) {
   trashButton.addEventListener('click', function() {
     const cardItem = cardElement.closest('.element');
-    cardItem.remove();
     deleteCard(cardId)
+      .then((res)=>{
+        cardItem.remove();
+      })
       .catch((err) => {
         console.log(`Что-то пошло не так. Ошибка: ${err}`);
       })
@@ -85,21 +84,4 @@ cardImage.addEventListener('click', function () {
  cardImage.src = imageLinkValue;
  cardImage.alt = descriptionValue;
 return cardElement
-};
-
-//Добавление карточки на сервер
-export function handleAddPhotoSubmit (evt) {
-    evt.preventDefault();
-    postCard(inputNameCard.value, inputUrlCard.value)
-    .then((json) => {
-      cardsContainer.append(addCard(json['name'], json['link'], json['owner']['_id'], json['owner']['_id'], json['likes'], json['_id']));
-    })
-    .catch((err) => {
-      console.log(`Что-то пошло не так. Ошибка: ${err}`);
-    })
-    .finally(() => {
-      setTimeout(() => {loadingMessage(evt.submitter, false);}, 100);
-      closePopup(popupAddPhoto);
-      evt.target.reset();
-    })
 };

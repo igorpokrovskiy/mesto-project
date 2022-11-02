@@ -1,10 +1,12 @@
 import './pages/index.css';
-import { renderInitialCards, handleAddPhotoSubmit } from "./components/card.js";
-import { openPopup, closePopup } from './components/utils.js';
-import { profileEditButton,popupEditProfile, getProfileFromServer, profileForm, handleProfileFormSubmit, profileName, profileAbout, profileAvatar, nameInput, jobInput, handleAvatarSubmit} from "./components/modal.js"
+import { renderInitialCards, addCard } from "./components/card.js";
+import { openPopup, closePopup } from './components/modal.js';
+import { loadingMessage } from './components/utils.js';
 import { enableValidation, settings } from './components/validate.js';
-import { addPhotoButton, popupAddPhoto, popups, cardsContainer, avatarEditButton, popupEditAvatar } from './components/constants.js'
-import { fetchUser, getInitialCards } from "./components/api.js";
+import { addPhotoButton, popupAddPhoto, cardsContainer, avatarEditButton, 
+  popupEditAvatar, avatarEditInput, inputNameCard, inputUrlCard, profileEditButton,
+ popupEditProfile, profileForm, profileName, profileAbout, nameInput, jobInput, profileAvatar} from './components/constants.js'
+import { fetchUser, getInitialCards, postCard, patchProfile, patchAvatar } from "./components/api.js";
 
 //Загрузка информации о пользователе
 fetchUser()
@@ -32,22 +34,72 @@ addPhotoButton.addEventListener('click', () => {
 popupAddPhoto.addEventListener('submit', handleAddPhotoSubmit); 
 profileForm.addEventListener('submit', handleProfileFormSubmit); 
 
-//Функции открытия и закрытия попапа
-popups.forEach((popup) => {
-  popup.addEventListener('mousedown', (evt) => {
-      if (evt.target.classList.contains('popup_opened')) {
-          closePopup(popup)
-      }
-      if (evt.target.classList.contains('popup__close')) {
-        closePopup(popup)
-      }
+//Редактирование имени и информации о себе
+function getProfileFromServer (name, about, avatar, json) {
+  name.textContent = json['name'];
+  about.textContent = json['about'];
+  avatar.src = json['avatar'];
+};
+
+function handleProfileFormSubmit (evt) {
+  evt.preventDefault(); 
+  loadingMessage(evt.submitter, true);
+  patchProfile(nameInput.value, jobInput.value)
+  .then((json) => {
+    getProfileFromServer(profileName, profileAbout, profileAvatar, json);
+    profileName.textContent = nameInput.value;
+    profileAbout.textContent = jobInput.value;
+  closePopup(popupEditProfile);
+})
+  .catch((err) => {
+  console.log(`Что-то пошло не так. Ошибка: ${err}`);
+})
+  .finally(() => {
+  loadingMessage(evt.submitter, false)
+})
+};
+
+//Добавление карточки на сервер
+function handleAddPhotoSubmit (evt) {
+  evt.preventDefault();
+  loadingMessage(evt.submitter, true);
+  postCard(inputNameCard.value, inputUrlCard.value)
+  .then((json) => {
+    cardsContainer.prepend(addCard(json['name'], json['link'], json['owner']['_id'], json['owner']['_id'], json['likes'], json['_id']));
+    closePopup(popupAddPhoto);
+    evt.target.reset();
   })
-});
+  .catch((err) => {
+    console.log(`Что-то пошло не так. Ошибка: ${err}`);
+  })
+  .finally(() => {
+    loadingMessage(evt.submitter, false)
+  })
+};
 
 //Редактирование аватара
 avatarEditButton.addEventListener('click', () => {
   openPopup(popupEditAvatar);
 });
 popupEditAvatar.addEventListener('submit', handleAvatarSubmit);
+
+function handleAvatarSubmit (evt) {
+  evt.preventDefault(); 
+  loadingMessage(evt.submitter, true);
+  patchAvatar(avatarEditInput.value)
+  .then((json) => {
+    getProfileFromServer(profileAvatar, profileName, profileAbout, json);
+    closePopup(popupEditAvatar);
+    profileAvatar.src = json.avatar;
+    evt.target.reset();
+  })
+  .catch((err) => {
+    console.log(`Что-то пошло не так. Ошибка: ${err}`);
+  })
+  .finally(() => {
+    loadingMessage(evt.submitter, false)
+  })
+};
+
 
 enableValidation(settings);
